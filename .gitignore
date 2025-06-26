@@ -47,3 +47,13 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Secrets folder
+secrets/
+form_definition_repo/
+
+renv
+
+# If it gets away
+*.txt
+*.xlsx
