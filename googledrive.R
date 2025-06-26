@@ -69,3 +69,25 @@ noora_gdrive_folder_init <-
     log_info('Control Panel Successfully Created!')
     noora_google_auth(authorize = FALSE)
   }
+
+noora_gdrive_subfolder_meta <-
+  function(id=GDRIVE_FOLDER_ID){
+    on.exit(noora_google_auth(FALSE))
+    noora_google_auth(TRUE)
+    folder_info=drive_ls(path = as_id(id))
+    meta=as.list(folder_info$id)
+    names(meta)=folder_info$name
+    return(meta)
+  }
+
+noora_gdrive_raw_upload <-
+  function(){
+    on.exit(noora_google_auth(FALSE))
+    raw_file_path=noora_gdrive_subfolder_meta()[['raw']]
+    noora_google_auth()
+    for (file in list.files(path = "form_definition_repo/",full.names = TRUE)) {
+      drive_upload(media = file,path = raw_file_path,type = "spreadsheet")
+      log_info(file)
+    }
+  }
+
