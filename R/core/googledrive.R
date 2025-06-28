@@ -1,6 +1,8 @@
 
 # Dependencies ------------------------------------------------------------
 library(googledrive)
+source('surveycto.R')
+source('helper.R')
 
 SERVICE_ACCOUNT_PATH='secrets/service_account_creds.json'
 GDRIVE_FOLDER_ID='1khmWpbSCnFawvIq8Yg7Xus3QbDDJdL5D'
@@ -39,8 +41,9 @@ noora_gdrive_folder_validate <-
 
 noora_gdrive_folder_init <-
   function(id=GDRIVE_FOLDER_ID){
+    on.exit(noora_google_auth(authorize = FALSE))
     folder_id=as_id(id)
-    folders_to_be_created=c('raw','latest')
+    folders_to_be_created=c('form definition')
     is_valid_folder=noora_gdrive_folder_validate(id)
     if(is_valid_folder==TRUE){
       NULL
@@ -59,7 +62,7 @@ noora_gdrive_folder_init <-
     }
     # Get folder structure ready
     for (folder in folders_to_be_created) {
-      drive_mkdir(name = folder,path = folder_id)
+      drive_mkdir(names = folder,path = folder_id)
     }
     log_info('Folders created successfully!')
     # Create Control Panel Spreadsheet
@@ -67,7 +70,6 @@ noora_gdrive_folder_init <-
                 path = folder_id,
                 type = "spreadsheet")
     log_info('Control Panel Successfully Created!')
-    noora_google_auth(authorize = FALSE)
   }
 
 noora_gdrive_subfolder_meta <-
@@ -83,11 +85,22 @@ noora_gdrive_subfolder_meta <-
 noora_gdrive_raw_upload <-
   function(){
     on.exit(noora_google_auth(FALSE))
-    raw_file_path=noora_gdrive_subfolder_meta()[['raw']]
+    gdrive_path=noora_gdrive_subfolder_meta()[['form definition']]
+    # Downloaded files, all mapped and ready to go
+    form_definitions_downloaded=noora_helper_form_definition_local_path()
     noora_google_auth()
-    for (file in list.files(path = "form_definition_repo/",full.names = TRUE)) {
-      drive_upload(media = file,path = raw_file_path,type = "spreadsheet")
-      log_info(file)
+    # Store the upload information
+    upload_log=data.frame(form_id=character(),
+                          google_file_id=googledrive::as_id())
+    for (form in names(form_definitions_downloaded)) {
+      upload_info=drive_put(media = paste0(FORM_DEFINITION_DIRECTORY,
+                                              form_definitions_downloaded[form]),
+                   name = form,
+                   path = gdrive_path,
+                   type = "spreadsheet")
+      upload_log=rbind(upload_log,data.frame(form_id=form,
+                                             google_file_id=as_id(upload_info$id)))
     }
+    return(upload_log)
   }
 

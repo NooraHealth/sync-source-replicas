@@ -9,7 +9,7 @@ logger::log_threshold(level = DEBUG)
 
 # Secrets -----------------------------------------------------------------
 SURVEYCTO_SECRETS_FILE_PATH='secrets/scto_auth.txt'
-FORM_DEFINITION_DIRECTORY='form_definition_repo'
+FORM_DEFINITION_DIRECTORY='form_definition_repo/'
 
 # Relevant Methods --------------------------------------------------------
 noora_scto_auth_key <-
@@ -70,7 +70,7 @@ noora_scto_form_definition_download <-
                       actor) |>
         dplyr::rename(c('form_deployed_date'='date_str',
                         'user_ac_who_deployed_form'='actor')) |>
-        dplyr::mutate(donloaded_file_name=
+        dplyr::mutate(downloaded_file_name=
                         stringr::str_c(form_id,'__',form_version,'.xlsx')
                       )
       return(cleaned_metadata)
