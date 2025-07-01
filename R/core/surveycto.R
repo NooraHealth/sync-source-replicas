@@ -69,7 +69,7 @@ noora_scto_form_definition_download <-
         dplyr::select(form_id,form_version,date_str,
                       actor) |>
         dplyr::rename(c('form_deployed_date'='date_str',
-                        'user_ac_who_deployed_form'='actor')) |>
+                        'deployed_by'='actor')) |>
         dplyr::mutate(downloaded_file_name=
                         stringr::str_c(form_id,'__',form_version,'.xlsx')
                       )
@@ -84,7 +84,7 @@ noora_scto_update <-
       select(group_title,title,id,form_version,num_submissions_complete) |>
       distinct() |> rename(c('form_id'='id'))
     main=noora_scto_form_definition_download(form_id) |>
-      left_join(catalog,by = c('form_id','form_version')) |>
+      inner_join(catalog,by = c('form_id','form_version')) |>
       select(group_title,title,form_id,
              form_version,num_submissions_complete,
              form_deployed_date,user_ac_who_deployed_form,

@@ -26,10 +26,24 @@ runtime_process <-
       list_of_forms_tbd=decision_to_be_made |> pull(,var = 'form_id')
       # Download these forms
       download_info=noora_scto_update(list_of_forms_tbd)
-      # Note to Jake: This is the point at which I'm raising the PR
-      # All the functions are ready, but the upload which is a batch process,
-      # needs to be an individual process and it should call the log update during that process
-      return(download_info)
+      # Upload these forms
+      upload_info=noora_gdrive_raw_upload()
+      # Snapshot of information on runtime
+      process_completion_details=download_info |>
+        select(-c(downloaded_file_name)) |>
+        left_join(upload_info,by = 'form_id') |>
+        left_join((decision_to_be_made |> select(form_id,status)),by = 'form_id')
+      # Use the process completion details to upload the log
+      ## Temporary solution need to change
+      noora_helper_form_def_log_mod <- purrr::possibly(noora_helper_form_def_log)
+      process_completion_details |>
+        select('google_file_id','form_version',
+               'form_deployed_date','deployed_by',
+               'status') |>
+        purrr::pwalk(noora_helper_form_def_log_mod)
+
+
+      return(process_completion_details)
     } else {
       return(NULL)
     }
