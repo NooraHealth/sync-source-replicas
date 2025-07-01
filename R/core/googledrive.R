@@ -1,11 +1,13 @@
 
 # Dependencies ------------------------------------------------------------
 library(googledrive)
-source('surveycto.R')
-source('helper.R')
+source('./R/core/surveycto.R')
+source('./R/core/helper.R')
 
 SERVICE_ACCOUNT_PATH='secrets/service_account_creds.json'
 GDRIVE_FOLDER_ID='1khmWpbSCnFawvIq8Yg7Xus3QbDDJdL5D'
+CONTROL_PANEL_FILE_NAME='SurveyCTO Control Panel'
+GDRIVE_FORM_DEFINITION_FOLDER='form definition'
 # Authorization -----------------------------------------------------------
 noora_google_auth <-
   function(authorize=TRUE){
@@ -24,7 +26,7 @@ noora_google_auth <-
     }
   }
 
-noora_gdrive_folder_validate <-
+noora_gdrive_validate_folder_id <-
   function(id=GDRIVE_FOLDER_ID){
     on.exit(noora_google_auth(FALSE))
 
@@ -39,35 +41,60 @@ noora_gdrive_folder_validate <-
     })
   }
 
-noora_gdrive_folder_init <-
+noora_gdrive_check_if_folder_is_empty <-
+  function(id=GDRIVE_FOLDER_ID){
+    noora_google_auth()
+    on.exit(noora_google_auth(FALSE))
+    folder_contents= drive_ls(as_id(id))
+    if (nrow(folder_contents)==0){
+      warning('Folder is empty! Is this your first runtime?')
+      return(TRUE)
+    } else {
+      message('Folder has some contents. Checking...')
+      return(FALSE)
+    }
+  }
+
+
+noora_gdrive_check_folder_structure <-
+  function(id=GDRIVE_FOLDER_ID){
+    if(noora_gdrive_check_if_folder_is_empty()==TRUE){
+      message('This folder lacks character. Lets change that')
+      return(FALSE)
+    } else {
+      if(GDRIVE_FORM_DEFINITION_FOLDER %in% names(noora_gdrive_subfolder_meta())){
+        message(paste0(GDRIVE_FORM_DEFINITION_FOLDER,' exists!'))
+      } else {
+        warning(paste0(GDRIVE_FORM_DEFINITION_FOLDER, ' does not exist'))
+        return(FALSE)
+      }
+      if(CONTROL_PANEL_FILE_NAME %in% names(noora_gdrive_subfolder_meta())){
+        message(paste0(CONTROL_PANEL_FILE_NAME, ' exists!'))
+        control_panel_id=noora_control_panel_find_control_panel_id()
+        control_panel_raw=read_sheet(control_panel_id,sheet = 'info')
+        if(nrow(control_panel_raw)==0){
+          message(paste0(CONTROL_PANEL_FILE_NAME, ' does not exist!'))
+          return(FALSE)
+        } else {
+          return(TRUE)
+        }
+      } else {
+        warning(paste0(CONTROL_PANEL_FILE_NAME, ' does not exist!'))
+        return(FALSE)
+      }
+    }
+  }
+
+noora_gdrive_folder_structure_init <-
   function(id=GDRIVE_FOLDER_ID){
     on.exit(noora_google_auth(authorize = FALSE))
-    folder_id=as_id(id)
-    folders_to_be_created=c('form definition')
-    is_valid_folder=noora_gdrive_folder_validate(id)
-    if(is_valid_folder==TRUE){
-      NULL
-    } else {
-      log_error('Cannot initialize folder due to non-valid folder id')
-      return(NULL)
-    }
-    # Check if folder is empty or not
-    noora_google_auth(authorize = TRUE)
-    if(nrow(drive_ls(as_id(GDRIVE_FOLDER_ID)))==0){
-      log_info('Folder tagged is empty. Primed for init')
-      NULL
-    } else {
-      log_error('Folder not empty! Unable to initialize!')
-      return(NULL)
-    }
     # Get folder structure ready
-    for (folder in folders_to_be_created) {
-      drive_mkdir(names = folder,path = folder_id)
-    }
+    drive_mkdir(names = GDRIVE_FORM_DEFINITION_FOLDER,
+                path = as_id(GDRIVE_FOLDER_ID))
     log_info('Folders created successfully!')
     # Create Control Panel Spreadsheet
     drive_create(name = "SurveyCTO Control Panel",
-                path = folder_id,
+                 path = as_id(GDRIVE_FOLDER_ID),
                 type = "spreadsheet")
     log_info('Control Panel Successfully Created!')
   }
