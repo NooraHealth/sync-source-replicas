@@ -27,8 +27,10 @@ forms = catalog_merged[
     (is.na(last_version_created_at_dest) |
        (last_version_created_at > last_version_created_at_dest))]
 
-set.seed(1984) # TESTING
-forms = forms[sample.int(.N, 3L)] # TESTING
+# >>>>> TESTING
+set.seed(1984)
+forms = forms[sample.int(.N, 10L)]
+# <<<<< TESTING
 
 syncs_empty = data.table(id = NA, form_version = NA, synced_at = NA)
 forms_iter = iterators::iter(forms, by = 'row')
@@ -76,9 +78,9 @@ if (nrow(forms) > 0L) {
 forms_removed = output_folder_ls[
   name != '_history' & !startsWith(name, '(removed) ')][
     !forms, on = c('name' = 'id')]
+
 for (i in seq_len(nrow(forms_removed))) {
   drive_rename(
     forms_removed$id[i], paste('(removed)', forms_removed$name[i]),
     overwrite = TRUE)
 }
-

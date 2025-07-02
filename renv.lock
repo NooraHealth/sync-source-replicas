@@ -373,69 +373,6 @@
       "RemoteRef": "master",
       "RemoteSha": "05c7c68eea80a1df48fecbf812df2c99d513177a"
     },
-    "dplyr": {
-      "Package": "dplyr",
-      "Version": "1.1.4",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "A Grammar of Data Manipulation",
-      "Authors@R": "c( person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-4757-117X\")), person(\"Romain\", \"François\", role = \"aut\", comment = c(ORCID = \"0000-0002-2444-4226\")), person(\"Lionel\", \"Henry\", role = \"aut\"), person(\"Kirill\", \"Müller\", role = \"aut\", comment = c(ORCID = \"0000-0002-1416-3412\")), person(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = \"aut\", comment = c(ORCID = \"0000-0003-4777-038X\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
-      "Description": "A fast, consistent tool for working with data frame like objects, both in memory and out of memory.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://dplyr.tidyverse.org, https://github.com/tidyverse/dplyr",
-      "BugReports": "https://github.com/tidyverse/dplyr/issues",
-      "Depends": [
-        "R (>= 3.5.0)"
-      ],
-      "Imports": [
-        "cli (>= 3.4.0)",
-        "generics",
-        "glue (>= 1.3.2)",
-        "lifecycle (>= 1.0.3)",
-        "magrittr (>= 1.5)",
-        "methods",
-        "pillar (>= 1.9.0)",
-        "R6",
-        "rlang (>= 1.1.0)",
-        "tibble (>= 3.2.0)",
-        "tidyselect (>= 1.2.0)",
-        "utils",
-        "vctrs (>= 0.6.4)"
-      ],
-      "Suggests": [
-        "bench",
-        "broom",
-        "callr",
-        "covr",
-        "DBI",
-        "dbplyr (>= 2.2.1)",
-        "ggplot2",
-        "knitr",
-        "Lahman",
-        "lobstr",
-        "microbenchmark",
-        "nycflights13",
-        "purrr",
-        "rmarkdown",
-        "RMySQL",
-        "RPostgreSQL",
-        "RSQLite",
-        "stringi (>= 1.7.6)",
-        "testthat (>= 3.1.5)",
-        "tidyr (>= 1.3.0)",
-        "withr"
-      ],
-      "VignetteBuilder": "knitr",
-      "Config/Needs/website": "tidyverse, shiny, pkgdown, tidyverse/tidytemplate",
-      "Config/testthat/edition": "3",
-      "Encoding": "UTF-8",
-      "LazyData": "true",
-      "RoxygenNote": "7.2.3",
-      "NeedsCompilation": "yes",
-      "Author": "Hadley Wickham [aut, cre] (<https://orcid.org/0000-0003-4757-117X>), Romain François [aut] (<https://orcid.org/0000-0002-2444-4226>), Lionel Henry [aut], Kirill Müller [aut] (<https://orcid.org/0000-0002-1416-3412>), Davis Vaughan [aut] (<https://orcid.org/0000-0003-4777-038X>), Posit Software, PBC [cph, fnd]",
-      "Maintainer": "Hadley Wickham <hadley@posit.co>",
-      "Repository": "CRAN"
-    },
     "foreach": {
       "Package": "foreach",
       "Version": "1.5.2",
@@ -560,38 +497,6 @@
       "NeedsCompilation": "no",
       "Author": "Jennifer Bryan [aut, cre] (<https://orcid.org/0000-0002-6983-2759>), Craig Citro [aut], Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>), Google Inc [cph], Posit Software, PBC [cph, fnd]",
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
-      "Repository": "CRAN"
-    },
-    "generics": {
-      "Package": "generics",
-      "Version": "0.1.4",
-      "Source": "Repository",
-      "Title": "Common S3 Generics not Provided by Base R Methods Related to Model Fitting",
-      "Authors@R": "c( person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-4757-117X\")), person(\"Max\", \"Kuhn\", , \"max@posit.co\", role = \"aut\"), person(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = \"aut\"), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"), comment = c(ROR = \"https://ror.org/03wc8by49\")) )",
-      "Description": "In order to reduce potential package dependencies and conflicts, generics provides a number of commonly used S3 generics.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://generics.r-lib.org, https://github.com/r-lib/generics",
-      "BugReports": "https://github.com/r-lib/generics/issues",
-      "Depends": [
-        "R (>= 3.6)"
-      ],
-      "Imports": [
-        "methods"
-      ],
-      "Suggests": [
-        "covr",
-        "pkgload",
-        "testthat (>= 3.0.0)",
-        "tibble",
-        "withr"
-      ],
-      "Config/Needs/website": "tidyverse/tidytemplate",
-      "Config/testthat/edition": "3",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.2",
-      "NeedsCompilation": "no",
-      "Author": "Hadley Wickham [aut, cre] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Max Kuhn [aut], Davis Vaughan [aut], Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
-      "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
     "glue": {
@@ -967,62 +872,6 @@
       "NeedsCompilation": "no",
       "Author": "Lionel Henry [aut, cre], Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Lionel Henry <lionel@posit.co>",
-      "Repository": "CRAN"
-    },
-    "logger": {
-      "Package": "logger",
-      "Version": "0.4.0",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "A Lightweight, Modern and Flexible Logging Utility",
-      "Date": "2024-10-19",
-      "Authors@R": "c( person(\"Gergely\", \"Daróczi\", , \"daroczig@rapporter.net\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-3149-8537\")), person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\", comment = c(ORCID = \"0000-0003-4757-117X\")), person(\"System1\", role = \"fnd\") )",
-      "Description": "Inspired by the the 'futile.logger' R package and 'logging' Python module, this utility provides a flexible and extensible way of formatting and delivering log messages with low overhead.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://daroczig.github.io/logger/",
-      "BugReports": "https://github.com/daroczig/logger/issues",
-      "Depends": [
-        "R (>= 4.0.0)"
-      ],
-      "Imports": [
-        "utils"
-      ],
-      "Suggests": [
-        "botor",
-        "covr",
-        "crayon",
-        "devtools",
-        "glue",
-        "jsonlite",
-        "knitr",
-        "mirai (>= 1.3.0)",
-        "pander",
-        "parallel",
-        "R.utils",
-        "rmarkdown",
-        "roxygen2",
-        "RPushbullet",
-        "rsyslog",
-        "shiny",
-        "slackr (>= 1.4.1)",
-        "syslognet",
-        "telegram",
-        "testthat (>= 3.0.0)",
-        "withr"
-      ],
-      "Enhances": [
-        "futile.logger",
-        "log4r",
-        "logging"
-      ],
-      "VignetteBuilder": "knitr",
-      "Config/testthat/edition": "3",
-      "Config/testthat/parallel": "TRUE",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.2",
-      "NeedsCompilation": "no",
-      "Author": "Gergely Daróczi [aut, cre] (<https://orcid.org/0000-0003-3149-8537>), Hadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>), System1 [fnd]",
-      "Maintainer": "Gergely Daróczi <daroczig@rapporter.net>",
       "Repository": "CRAN"
     },
     "magrittr": {
@@ -1592,80 +1441,6 @@
       "RemoteRef": "main",
       "RemoteSha": "f6e5aea1c65eab3a6890bc3564fbc62a30ef1e19"
     },
-    "stringi": {
-      "Package": "stringi",
-      "Version": "1.8.7",
-      "Source": "Repository",
-      "Date": "2025-03-27",
-      "Title": "Fast and Portable Character String Processing Facilities",
-      "Description": "A collection of character string/text/natural language processing tools for pattern searching (e.g., with 'Java'-like regular expressions or the 'Unicode' collation algorithm), random string generation, case mapping, string transliteration, concatenation, sorting, padding, wrapping, Unicode normalisation, date-time formatting and parsing, and many more. They are fast, consistent, convenient, and - thanks to 'ICU' (International Components for Unicode) - portable across all locales and platforms. Documentation about 'stringi' is provided via its website at <https://stringi.gagolewski.com/> and the paper by Gagolewski (2022, <doi:10.18637/jss.v103.i02>).",
-      "URL": "https://stringi.gagolewski.com/, https://github.com/gagolews/stringi, https://icu.unicode.org/",
-      "BugReports": "https://github.com/gagolews/stringi/issues",
-      "SystemRequirements": "ICU4C (>= 61, optional)",
-      "Type": "Package",
-      "Depends": [
-        "R (>= 3.4)"
-      ],
-      "Imports": [
-        "tools",
-        "utils",
-        "stats"
-      ],
-      "Biarch": "TRUE",
-      "License": "file LICENSE",
-      "Authors@R": "c(person(given = \"Marek\", family = \"Gagolewski\", role = c(\"aut\", \"cre\", \"cph\"), email = \"marek@gagolewski.com\", comment = c(ORCID = \"0000-0003-0637-6028\")), person(given = \"Bartek\", family = \"Tartanus\", role = \"ctb\"), person(\"Unicode, Inc. and others\", role=\"ctb\", comment = \"ICU4C source code, Unicode Character Database\") )",
-      "RoxygenNote": "7.3.2",
-      "Encoding": "UTF-8",
-      "NeedsCompilation": "yes",
-      "Author": "Marek Gagolewski [aut, cre, cph] (<https://orcid.org/0000-0003-0637-6028>), Bartek Tartanus [ctb], Unicode, Inc. and others [ctb] (ICU4C source code, Unicode Character Database)",
-      "Maintainer": "Marek Gagolewski <marek@gagolewski.com>",
-      "License_is_FOSS": "yes",
-      "Repository": "CRAN"
-    },
-    "stringr": {
-      "Package": "stringr",
-      "Version": "1.5.1",
-      "Source": "Repository",
-      "Title": "Simple, Consistent Wrappers for Common String Operations",
-      "Authors@R": "c( person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\", \"cph\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
-      "Description": "A consistent, simple and easy to use set of wrappers around the fantastic 'stringi' package. All function and argument names (and positions) are consistent, all functions deal with \"NA\"'s and zero length vectors in the same way, and the output from one function is easy to feed into the input of another.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://stringr.tidyverse.org, https://github.com/tidyverse/stringr",
-      "BugReports": "https://github.com/tidyverse/stringr/issues",
-      "Depends": [
-        "R (>= 3.6)"
-      ],
-      "Imports": [
-        "cli",
-        "glue (>= 1.6.1)",
-        "lifecycle (>= 1.0.3)",
-        "magrittr",
-        "rlang (>= 1.0.0)",
-        "stringi (>= 1.5.3)",
-        "vctrs (>= 0.4.0)"
-      ],
-      "Suggests": [
-        "covr",
-        "dplyr",
-        "gt",
-        "htmltools",
-        "htmlwidgets",
-        "knitr",
-        "rmarkdown",
-        "testthat (>= 3.0.0)",
-        "tibble"
-      ],
-      "VignetteBuilder": "knitr",
-      "Config/Needs/website": "tidyverse/tidytemplate",
-      "Config/testthat/edition": "3",
-      "Encoding": "UTF-8",
-      "LazyData": "true",
-      "RoxygenNote": "7.2.3",
-      "NeedsCompilation": "no",
-      "Author": "Hadley Wickham [aut, cre, cph], Posit Software, PBC [cph, fnd]",
-      "Maintainer": "Hadley Wickham <hadley@posit.co>",
-      "Repository": "CRAN"
-    },
     "sys": {
       "Package": "sys",
       "Version": "3.4.3",
@@ -1752,49 +1527,6 @@
       "NeedsCompilation": "yes",
       "Author": "Kirill Müller [aut, cre] (ORCID: <https://orcid.org/0000-0002-1416-3412>), Hadley Wickham [aut], Romain Francois [ctb], Jennifer Bryan [ctb], RStudio [cph, fnd]",
       "Maintainer": "Kirill Müller <kirill@cynkra.com>",
-      "Repository": "CRAN"
-    },
-    "tidyselect": {
-      "Package": "tidyselect",
-      "Version": "1.2.1",
-      "Source": "Repository",
-      "Title": "Select from a Set of Strings",
-      "Authors@R": "c( person(\"Lionel\", \"Henry\", , \"lionel@posit.co\", role = c(\"aut\", \"cre\")), person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\"), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
-      "Description": "A backend for the selecting functions of the 'tidyverse'.  It makes it easy to implement select-like functions in your own packages in a way that is consistent with other 'tidyverse' interfaces for selection.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://tidyselect.r-lib.org, https://github.com/r-lib/tidyselect",
-      "BugReports": "https://github.com/r-lib/tidyselect/issues",
-      "Depends": [
-        "R (>= 3.4)"
-      ],
-      "Imports": [
-        "cli (>= 3.3.0)",
-        "glue (>= 1.3.0)",
-        "lifecycle (>= 1.0.3)",
-        "rlang (>= 1.0.4)",
-        "vctrs (>= 0.5.2)",
-        "withr"
-      ],
-      "Suggests": [
-        "covr",
-        "crayon",
-        "dplyr",
-        "knitr",
-        "magrittr",
-        "rmarkdown",
-        "stringr",
-        "testthat (>= 3.1.1)",
-        "tibble (>= 2.1.3)"
-      ],
-      "VignetteBuilder": "knitr",
-      "ByteCompile": "true",
-      "Config/testthat/edition": "3",
-      "Config/Needs/website": "tidyverse/tidytemplate",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.0.9000",
-      "NeedsCompilation": "yes",
-      "Author": "Lionel Henry [aut, cre], Hadley Wickham [aut], Posit Software, PBC [cph, fnd]",
-      "Maintainer": "Lionel Henry <lionel@posit.co>",
       "Repository": "CRAN"
     },
     "utf8": {
