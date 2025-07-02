@@ -1,0 +1,5 @@
+environments:
+  - name: prod
+    output_folder_url: https://drive.google.com/drive/u/1/folders/1bUcP6tmCTTMgusNh1rUvmJlx0RYdeHZ7
+  - name: dev
+    output_folder_url: https://drive.google.com/drive/u/1/folders/19-tyvEABtjWTCY3L8U4MWN2f7tibbELP
