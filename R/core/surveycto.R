@@ -87,7 +87,7 @@ noora_scto_update <-
       inner_join(catalog,by = c('form_id','form_version')) |>
       select(group_title,title,form_id,
              form_version,num_submissions_complete,
-             form_deployed_date,user_ac_who_deployed_form,
+             form_deployed_date,deployed_by,
              downloaded_file_name)
     return(main)
   }

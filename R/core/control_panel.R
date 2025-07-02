@@ -29,3 +29,45 @@ noora_gsheet_auth <-
     }
   }
 
+noora_control_panel_update <-
+  function(init=FALSE,data_to_be_inserted=NULL){
+    on.exit(noora_google_auth(FALSE))
+    safe_drive_link=purrr::possibly(drive_link,otherwise = NA_character_)
+    noora_google_auth()
+    if(init==FALSE){
+      if(!is.null(data_to_be_inserted)){
+        control_panel_raw=googlesheets4::read_sheet(ss = noora_helper_where_is_control_panel(),
+                                  sheet = 'info') |>
+          select(-c(status))
+        unaffected_forms=control_panel_raw |>
+          anti_join(data_to_be_inserted,by = 'form_id') |>
+          mutate(status='NO CHANGE')
+        noora_google_auth()
+        affected_forms=data_to_be_inserted |>
+          mutate(link_to_form_definition=purrr::map_chr(google_file_id,safe_drive_link)) |>
+          mutate(has_been_upgraded=if_else(status=="UPGRADE","YES","NO"))
+        print(affected_forms)
+        final_output=affected_forms |>
+          add_row(unaffected_forms)
+        googlesheets4::write_sheet(data = final_output,
+                                   ss = noora_helper_where_is_control_panel(),
+                                   sheet = 'info')
+        return(TRUE)
+      } else {
+          final_output=read_sheet(ss = noora_helper_where_is_control_panel(),
+                                  sheet = 'info') |>
+            mutate(status="NO CHANGE")
+          googlesheets4::write_sheet(data=final_output,
+                                     ss = noora_helper_where_is_control_panel(),
+                                     sheet = 'info')
+          return(TRUE)
+      }
+    } else {
+      googlesheets4::write_sheet(data = data_to_be_inserted,
+                                 ss=noora_helper_where_is_control_panel(),
+                                 sheet = 'info')
+      return(TRUE)
+    }
+
+  }
+

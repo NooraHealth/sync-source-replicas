@@ -1,6 +1,7 @@
 # Dependencies ------------------------------------------------------------
 source('./R/core/helper.R')
 source('./R/core/googledrive.R')
+source('./R/core/control_panel.R')
 
 # Business as usual -------------------------------------------------------
 
@@ -24,6 +25,13 @@ runtime_process <-
                                 to_be_upgraded==TRUE ~ "UPGRADE"))
       # List of forms to be downloaded
       list_of_forms_tbd=decision_to_be_made |> pull(,var = 'form_id')
+      # If there is no forms to edit
+      if(nrow(decision_to_be_made)==0){
+        message('No forms to be updated.')
+        noora_control_panel_update(init = FALSE,data_to_be_inserted = NULL)
+        message('Control Panel reset!')
+        return(NULL)
+      }
       # Download these forms
       download_info=noora_scto_update(list_of_forms_tbd)
       # Upload these forms
@@ -35,15 +43,16 @@ runtime_process <-
         left_join((decision_to_be_made |> select(form_id,status)),by = 'form_id')
       # Use the process completion details to upload the log
       ## Temporary solution need to change
+      ### Note: The log details get reset as the form definition sheet gets reset entirely. Need to fix.
       noora_helper_form_def_log_mod <- purrr::possibly(noora_helper_form_def_log)
       process_completion_details |>
         select('google_file_id','form_version',
                'form_deployed_date','deployed_by',
                'status') |>
         purrr::pwalk(noora_helper_form_def_log_mod)
-
-
-      return(process_completion_details)
+      # Control Panel
+      noora_control_panel_update(data_to_be_inserted = process_completion_details)
+      message('Update successful!')
     } else {
       return(NULL)
     }
