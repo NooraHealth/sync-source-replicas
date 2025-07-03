@@ -77,7 +77,7 @@ if (nrow(forms) > 0L) {
 
 forms_removed = output_folder_ls[
   name != '_history' & !startsWith(name, '(removed) ')][
-    !forms, on = c('name' = 'id')]
+    !catalog_source, on = c('name' = 'id')]
 
 for (i in seq_len(nrow(forms_removed))) {
   drive_rename(
