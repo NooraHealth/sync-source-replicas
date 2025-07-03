@@ -28,8 +28,10 @@ forms = catalog_merged[
        (last_version_created_at > last_version_created_at_dest))]
 
 # >>>>> TESTING
-set.seed(1984)
-forms = forms[sample.int(.N, 10L)]
+if (params$environment == 'dev') {
+  set.seed(1984)
+  forms = forms[sample.int(.N, 10L)]
+}
 # <<<<< TESTING
 
 syncs_empty = data.table(id = NA, form_version = NA, synced_at = NA)
