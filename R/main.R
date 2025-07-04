@@ -5,9 +5,14 @@ params = get_params('params.yaml')
 auth = get_scto_auth()
 set_google_auth()
 
+def_dir = tempdir()
 synced_at = format(Sys.time(), '%FT%XZ', tz = 'GMT')
 catalog_source = scto_catalog(auth)
-def_dir = tempdir()
+
+# deal with timestamps changing by one second in round trip from gsheet
+catalog_source[, `:=`(
+  last_version_created_at = format(last_version_created_at, '%FT%XZ'),
+  last_incoming_data_at = format(last_incoming_data_at, '%FT%XZ'))]
 
 output_folder_ls = setDT(drive_ls(params$output_folder_url))
 history_file = output_folder_ls[name == '_history']
@@ -30,15 +35,21 @@ forms = catalog_merged[
 # >>>>> TESTING
 if (params$environment == 'dev') {
   set.seed(1984)
-  forms = forms[sample.int(.N, 10L)]
+  forms = forms[sample.int(.N, 3L)]
 }
 # <<<<< TESTING
 
+cli_alert_success('Attempting to sync definitions for {nrow(forms)} form{?s}.')
 syncs_empty = data.table(id = NA, form_version = NA, synced_at = NA)
-forms_iter = iterators::iter(forms, by = 'row')
 
-syncs = foreach(form = forms_iter, .combine = rbind) %do% { # %dopar%
+pb = progress_bar$new(total = nrow(forms), show_after = 0)
+foreach_form = foreach(
+  form = iterators::iter(forms, by = 'row'), .combine = rbind)
+
+syncs = foreach_form %do% { # %dopar%
   f = tryCatch({
+    pb$tick()
+    cat('\n')
     metadata = scto_get_form_metadata(
       auth, form$id, deployed_only = TRUE, def_dir = def_dir)
 
