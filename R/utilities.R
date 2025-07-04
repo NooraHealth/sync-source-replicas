@@ -1,3 +1,4 @@
+library('cli')
 library('data.table')
 # library('doParallel')
 library('foreach')
@@ -5,6 +6,7 @@ library('glue')
 library('googledrive')
 library('googlesheets4')
 library('here')
+library('progress')
 library('rsurveycto')
 
 
