@@ -1,20 +1,7 @@
 source(here::here('R', 'utilities.R'))
 
 
-# Authorization -----------------------------------------------------------
-# registerDoParallel() # prevents cli messages, could maybe use futures
-# auth = get_scto_auth()
-# set_google_auth()
-#
-# # Global Variables --------------------------------------------------------
-# params = get_params('params.yaml')
-# synced_at = format(Sys.time(), '%FT%XZ', tz = 'GMT')
-# catalog_source = scto_catalog(auth)
-# def_dir = tempdir()
-#
-# # Google Drive Details ----------------------------------------------------
-# output_folder_ls = setDT(drive_ls(params$output_folder_url))
-
+# _history ----------------------------------------------------------------
 get_history_file <-
   # Looks for a file called _history in the specified drive location.
   # If it exists, returns the file id, else NA
@@ -167,4 +154,8 @@ detect_ghost_forms <-
         return(ghost_form_info)
       }
       return(ghost_form_info)
-}
+    }
+
+# Run main process --------------------------------------------------------
+run()
+
