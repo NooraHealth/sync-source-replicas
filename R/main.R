@@ -43,7 +43,7 @@ run <-
     # Update history file
     update_history_file(forms,syncs,output_folder_ls)
     # Remove deleted forms
-    remove_deleted_forms(output_folder_ls,forms)
+    remove_deleted_forms(output_folder_ls,catalog_source)
   }
 
 # Change detection -----------------------------------------------
@@ -122,10 +122,10 @@ update_history_file <-
 
 
 remove_deleted_forms <-
-  function(output_folder,forms){
+  function(output_folder,catalog_source){
     forms_removed = output_folder[
       name != '_history' & !startsWith(name, '(removed) ')][
-        !forms, on = c('name' = 'id')]
+        !catalog_source, on = c('name' = 'id')]
 
     for (i in seq_len(nrow(forms_removed))) {
       drive_rename(
