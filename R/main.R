@@ -19,11 +19,10 @@ run = \(){
     synced_at = format(Sys.time(), '%Y-%m-%dT%H:%M:%SZ', tz = 'GMT')
     catalog_source = scto_catalog(auth)
     # Meta info of all versions
-    meta_info = testing_meta
-    # meta_info=scto_get_form_metadata(get_scto_auth(),
-    #                                  form_ids = NULL,
-    #                                  deployed_only = FALSE,
-    #                                  get_defs = FALSE)
+    meta_info=scto_get_form_metadata(get_scto_auth(),
+                                     form_ids = NULL,
+                                     deployed_only = FALSE,
+                                     get_defs = FALSE)
     # deal with timestamps changing by one second in round trip from gsheet
     # meta_info[,`:=`(
     #   date_str = format(date_str, '%FT%XZ'))]
