@@ -29,7 +29,7 @@ run <-
     def_dir = tempdir()
     output_folder_ls = setDT(drive_ls(params$output_folder_url))
     history_file= get_history_file(output_folder= output_folder_ls)
-    forms=get_form_def_changed(history_file,catalog_source,output_folder_ls)
+    forms_to_sync=get_form_def_changed(history_file,catalog_source,output_folder_ls)
     if(nrow(forms)==0){
       return()
     }
@@ -39,9 +39,9 @@ run <-
     # <<<<< TESTING
 
     # Sync forms
-    syncs=sync_form_definition(forms)
+    syncs=sync_form_definition(forms_to_sync)
     # Update history file
-    update_history_file(forms,syncs,output_folder_ls)
+    update_history_file(forms_to_sync,syncs,output_folder_ls)
     # Remove deleted forms
     rename_removed_forms(output_folder_ls,catalog_source)
   }
