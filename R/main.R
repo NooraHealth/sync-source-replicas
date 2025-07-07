@@ -29,7 +29,7 @@ run <-
     def_dir = tempdir()
     output_folder_ls = setDT(drive_ls(params$output_folder_url))
     history_file= get_history_file(output_folder= output_folder_ls)
-    forms_to_sync=get_form_def_changed(history_file,catalog_source,output_folder_ls)
+    forms_to_sync=get_forms_to_sync(history_file,catalog_source,output_folder_ls)
     if(nrow(forms)==0){
       return()
     }
@@ -47,7 +47,7 @@ run <-
   }
 
 # Change detection -----------------------------------------------
-get_form_def_changed <-
+get_forms_to_sync <-
   function(history_file,catalog_source,output_folder_ls){
     if (is.na(history_file)) {
       catalog_merged = copy(catalog_source)[, last_version_created_at_dest := NA]
