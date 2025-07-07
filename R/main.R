@@ -2,10 +2,7 @@ source(here::here('R', 'utilities.R'))
 
 
 # _history ----------------------------------------------------------------
-get_history_file <-
-  # Looks for a file called _history in the specified drive location.
-  # If it exists, returns the file id, else NA
-  function(output_folder){
+get_history_file = \(output_folder){
     history_file_id_if_exists=output_folder[name == '_history']
     history_file = if (nrow(history_file_id_if_exists) > 0L) history_file_id_if_exists$id[1L] else NA
     return(history_file)
@@ -13,8 +10,7 @@ get_history_file <-
 
 
 # Main process ------------------------------------------------------------
-run <-
-  function(){
+run = \(){
     # Authorization
     auth = get_scto_auth()
     set_google_auth()
@@ -39,7 +35,7 @@ run <-
     # <<<<< TESTING
 
     # Sync forms
-    syncs=sync_form_definition(forms_to_sync)
+    syncs=sync_form_definition(def_dir,forms_to_sync)
     # Update history file
     update_history_file(forms_to_sync,syncs,output_folder_ls)
     # Remove deleted forms
@@ -47,8 +43,7 @@ run <-
   }
 
 # Change detection -----------------------------------------------
-get_forms_to_sync <-
-  function(history_file,catalog_source,output_folder_ls){
+get_forms_to_sync = \(history_file,catalog_source,output_folder_ls){
     if (is.na(history_file)) {
       catalog_merged = copy(catalog_source)[, last_version_created_at_dest := NA]
     } else {
@@ -69,8 +64,7 @@ get_forms_to_sync <-
   }
 
 
-sync_form_definition <-
-  function(forms){
+sync_form_definition = \(def_dir,forms){
     syncs_empty = data.table(id = NA, form_version = NA, synced_at = NA)
     forms_iter = iterators::iter(forms, by = 'row')
 
@@ -101,8 +95,7 @@ sync_form_definition <-
   }
 
 
-update_history_file <-
-  function(forms,syncs,output_folder){
+update_history_file = \(forms,syncs,output_folder){
     if (nrow(forms) > 0L) {
       history_file=get_history_file(output_folder)
       if (is.na(history_file)) {
@@ -121,8 +114,7 @@ update_history_file <-
   }
 
 
-rename_removed_forms <-
-  function(output_folder,catalog_source){
+rename_removed_forms = \(output_folder,catalog_source){
     forms_removed = output_folder[
       name != '_history' & !startsWith(name, '(removed) ')][
         !catalog_source, on = c('name' = 'id')]
@@ -135,8 +127,7 @@ rename_removed_forms <-
   }
 
 
-detect_ghost_forms <-
-    function(catalog_source,output_folder_ls){
+detect_ghost_forms = \(catalog_source,output_folder_ls){
       # Find the removed files
       list_of_removed_files = copy(output_folder_ls[grepl("^\\(removed\\)", name)])
       setnames(list_of_removed_files,"id","drive_id")
