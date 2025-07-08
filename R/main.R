@@ -2,6 +2,7 @@ source(here::here('R', 'utilities.R'))
 
 
 # _history ----------------------------------------------------------------
+# rename gdrive_file_meta to folder_meta, same thing for output_folder_ls
 get_history_file = \(gdrive_file_meta){
     history_file_id_if_exists=gdrive_file_meta[name == '_history']
     history_file = if (nrow(history_file_id_if_exists) > 0L) history_file_id_if_exists$id[1L] else NA
@@ -19,10 +20,10 @@ run = \(){
     synced_at = format(Sys.time(), '%Y-%m-%dT%H:%M:%SZ', tz = 'GMT')
     catalog_source = scto_catalog(auth)
     # Meta info of all versions
-    meta_info=scto_get_form_metadata(get_scto_auth(),
-                                     form_ids = NULL,
-                                     deployed_only = FALSE,
-                                     get_defs = FALSE)
+    # meta_info = scto_get_form_metadata(auth,
+    #                                  form_ids = NULL,
+    #                                  deployed_only = FALSE,
+    #                                  get_defs = FALSE)
     # deal with timestamps changing by one second in round trip from gsheet
     # meta_info[,`:=`(
     #   date_str = format(date_str, '%FT%XZ'))]
@@ -32,14 +33,14 @@ run = \(){
     def_dir = tempdir()
 
     output_folder_ls = setDT(drive_ls(params$output_folder_url))
-    history_file= get_history_file(output_folder_ls)
-    forms_to_sync=get_forms_to_sync(history_file,catalog_source,output_folder_ls)
-    if(nrow(forms_to_sync)==0){
+    history_file = get_history_file(output_folder_ls)
+    forms_to_sync = get_forms_to_sync(history_file,catalog_source,output_folder_ls)
+    if(nrow(forms_to_sync) == 0){
       return()
     }
     # >>>>> TESTING
     set.seed(1984)
-    # forms_to_sync = forms_to_sync[sample.int(.N, 10L)]
+    forms_to_sync = forms_to_sync[sample.int(.N, 10L)]
     # <<<<< TESTING
     # Sync forms
     syncs = sync_form_definitions(auth,params,def_dir,forms_to_sync,
@@ -121,6 +122,7 @@ sync_form_definitions = \(auth,params,def_dir,forms,catalog,meta,
 
 update_history_file = \(params,forms,syncs,output_folder,catalog_source){
   syncs_empty = data.table(id = NA, form_version = NA, synced_at = NA)
+  # Remove this check because it's getting called again.
     if (nrow(forms) > 0L) {
       history_file=get_history_file(output_folder)
       if (is.na(history_file)) {
@@ -139,73 +141,97 @@ update_history_file = \(params,forms,syncs,output_folder,catalog_source){
 }
 
 
-detect_zombie_forms = \(form_id, meta,gdrive_file_meta) {
-  drive_file = gdrive_file_meta[name == form_id]
-  # Check if file exists
-  if (nrow(drive_file) == 0) {
-    return(FALSE)
+get_form_action = \(auth,forms,gdrive_folder_meta){
+  # Our possible output
+  action_info = data.table(
+    id=character(0),
+    action=character(0),
+    drive_id=character(0))
+  # Vector of all forms to be updated
+  list_of_forms = forms$id
+  # SCTO Meta info
+  meta_info = rsurveycto::scto_get_form_metadata(
+    auth,form_ids = list_of_forms, deployed_only = FALSE, get_defs = FALSE)
+  # Go through the versions already stored in the google sheet
+  for (form in list_of_forms) {
+    # Get gdrive details
+    drive_file = gdrive_folder_meta[name == form]
+    drive_id = drive_file$id[1]
+    # Read the _version in that form definition
+    sheet_version = as.data.table(
+          read_sheet(drive_id, sheet = "_versions")
+        )[, .(form_version, date_str, actor)]
+    # Get meta info for that form
+    scto_version = meta_info[form_id == form, .(form_version, date_str, actor)]
+    # Set operation to see if there has been any changes
+    if (nrow(fsetdiff(sheet_version, scto_version)) != 0){
+      action = "rename"
+    }
+    action = 'update'
+    row = data.table(id = form, action = action,
+                     drive_id = as.character(drive_id))
+    action_info = rbind(action_info,row)
   }
-  drive_id = drive_file$id[1]
-  # Check if "_versions" sheet exists
-  sheets_in_file = sheet_names(as_sheets_id(drive_id))
+  forms[action_info, on = 'id']
+}
+
+rename_zombie_forms = \(auth,form_id,drive_id){
+  drive_id=as_id(drive_id)
+  # Get the last sync details from the form
+  sheets_in_file = sheet_names(drive_id)
   if (!("_versions" %in% sheets_in_file)) {
     message("_versions sheet not found for form_id: ", form_id)
     return(FALSE)
   }
-  # Read sheet
-  sheet_version = as.data.table(
-    read_sheet(as_sheets_id(drive_id), sheet = "_versions")
+  sheet_sync = as.data.table(read_sheet(
+    ss = as_sheets_id(drive_id),
+    sheet = '_syncs'
+  ))
+  new_form_name = paste0('(removed)[',sheet_sync$synced_at,'] ',form_id)
+  # Rename the forms
+  drive_rename(
+    file = drive_id,
+    name = new_form_name,
+    overwrite = TRUE
   )
-  # Latest deployed version in sheet
-  last_version_details = sheet_version[is_deployed == TRUE, date_str][1]
-  # Version info from scto metadata
-  scto_version = meta[form_id == form_id, .(form_version, date_str, actor, is_deployed)]
-  common_cols = intersect(names(sheet_version), names(scto_version))
-
-  if (nrow(fsetdiff(sheet_version[, ..common_cols], scto_version[, ..common_cols])) != 0) {
-    new_name = paste0("(removed << ",last_version_details," >>) ", form_id)
-    drive_rename(as_id(drive_id), new_name, overwrite = TRUE)
-    message("Zombie form detected and renamed: ", form_id)
-    return(TRUE)
-  }
-
-  return(FALSE)
 }
 
 
 
-# rename_removed_forms = \(output_folder,catalog_source){
-#     forms_removed = output_folder[
-#       name != '_history' & !startsWith(name, '(removed) ')][
-#         !catalog_source, on = c('name' = 'id')]
-#
-#     for (i in seq_len(nrow(forms_removed))) {
-#       drive_rename(
-#         forms_removed$id[i], paste('(removed)', forms_removed$name[i]),
-#         overwrite = TRUE)
-#     }
+# detect_zombie_forms = \(form_id, meta,gdrive_file_meta) {
+#   drive_file = gdrive_file_meta[name == form_id]
+#   # Check if file exists
+#   if (nrow(drive_file) == 0) {
+#     return(FALSE)
 #   }
+#   drive_id = drive_file$id[1]
+#   # Check if "_versions" sheet exists
+#   sheets_in_file = sheet_names(as_sheets_id(drive_id))
+#   if (!("_versions" %in% sheets_in_file)) {
+#     message("_versions sheet not found for form_id: ", form_id)
+#     return(FALSE)
+#   }
+#   # Read sheet
+#   sheet_version = as.data.table(
+#     read_sheet(as_sheets_id(drive_id), sheet = "_versions")
+#   )
+#   # Latest deployed version in sheet
+#   last_version_details = sheet_version[is_deployed == TRUE, date_str][1]
+#   # Version info from scto metadata
+#   scto_version = meta[form_id == form_id, .(form_version, date_str, actor, is_deployed)]
+#   common_cols = intersect(names(sheet_version), names(scto_version))
+#
+#   if (nrow(fsetdiff(sheet_version[, ..common_cols], scto_version[, ..common_cols])) != 0) {
+#     new_name = paste0("(removed << ",last_version_details," >>) ", form_id)
+#     drive_rename(as_id(drive_id), new_name, overwrite = TRUE)
+#     message("Zombie form detected and renamed: ", form_id)
+#     return(TRUE)
+#   }
+#
+#   return(FALSE)
+# }
 
 
-# detect_ghost_forms = \(catalog_source,output_folder_ls){
-#       # Find the removed files
-#       removed_files_meta = copy(output_folder_ls[grepl("^\\(removed\\)", name)])
-#       setnames(removed_files_meta,"id","drive_id")
-#       removed_files_meta[, name := gsub("^\\(removed\\)\\s*", "", name)]
-#       # If they occur in the catalog, filter
-#       catalog=catalog_source[is_deployed==TRUE]
-#       ghost_form_info= catalog[removed_files_meta[,.(name,drive_id)], on = c('id' = 'name'), nomatch = 0]
-#       # Add this information to _history in _skip sheet
-#       if(nrow(ghost_form_info)>0){
-#         sheet_write(
-#           data = ghost_form_info[,.(title,id,form_version,last_version_created_at)],
-#           ss = get_history_file(output_folder_ls),
-#           sheet = '_skip'
-#         )
-#         return(ghost_form_info)
-#       }
-#       return(ghost_form_info)
-#     }
 
 # Run main process --------------------------------------------------------
 run()
