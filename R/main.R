@@ -1,15 +1,5 @@
 source(here::here('R', 'utilities.R'))
 
-
-# _history ----------------------------------------------------------------
-# rename gdrive_file_meta to folder_meta, same thing for output_folder_ls
-get_history_file = \(gdrive_file_meta){
-    history_file_id_if_exists=gdrive_file_meta[name == '_history']
-    history_file = if (nrow(history_file_id_if_exists) > 0L) history_file_id_if_exists$id[1L] else NA
-    history_file
-  }
-
-
 # Main process ------------------------------------------------------------
 run = \(){
     # Authorization
