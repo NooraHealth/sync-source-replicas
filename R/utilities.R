@@ -11,9 +11,11 @@ library('rsurveycto')
 
 
 # Parameters ----------------------------------------------------------
-get_params = \(path) {
+get_params = \(path, envir = NULL) {
   params_raw = yaml::read_yaml(path)
-  envir = if (Sys.getenv('GITHUB_REF_NAME') == 'main') 'prod' else 'dev'
+  if (is.null(envir)) {
+    envir = if (Sys.getenv('GITHUB_REF_NAME') == 'main') 'prod' else 'dev'
+  }
   envirs = sapply(params_raw$environments, \(x) x$name)
   params = c(
     params_raw[names(params_raw) != 'environments'],
@@ -86,6 +88,9 @@ check_is_form_zombie = \(form_id, form_meta, folder_meta) {
   if (nrow(form_file) == 0L) return(NA)
 
   file_id = form_file$id[1L]
+  sht_names = sheet_names(file_id)
+  if (!('_versions' %in% sht_names)) return(NA)
+
   ver_cols = c('form_version', 'date_str', 'actor')
   versions_dest = setDT(read_sheet(file_id, '_versions'))[, ..ver_cols]
   versions_source = form_meta[, ..ver_cols]
@@ -143,21 +148,33 @@ fetch_form_definition = \(auth, form_id, def_dir = tempdir()) {
 }
 
 
+sheet_append_safe = \(ss, data, sheet) {
+  ss_meta = gs4_get(ss)
+  sheets = as.data.table(ss_meta$sheets)
+  num_rows = sheets[name == sheet]$grid_rows + nrow(data)
+  sheet_resize(ss, sheet, nrow = num_rows)
+  sheet_append(ss = ss, data = data, sheet = sheet)
+}
+
+
 update_form_definition = \(auth, form_id, folder_url, form_meta, synced_at) {
   media = fetch_form_definition(auth, form_id)
   form_file = drive_put(
     media = media, name = form_id, path = folder_url, type = 'spreadsheet')
 
-  # Check if _syncs sheet exists, else create
-  if (!('_syncs' %in% sheet_names(form_file))) {
+  # Check if _syncs and _versions sheets exist, else create
+  sht_names = sheet_names(form_file)
+  if (!('_syncs' %in% sht_names)) {
     syncs_empty = data.table(form_version = NA, synced_at = NA)
     sheet_write(syncs_empty, form_file, '_syncs')
   }
 
+  if (!('_versions' %in% sht_names)) sheet_add(form_file, '_versions')
+
   # Append to existing sheet
   form_dt = form_meta[
     is_deployed == TRUE, .(form_version, synced_at = ..synced_at)]
-  sheet_append(form_file, form_dt, '_syncs')
+  sheet_append_safe(ss = form_file, data = form_dt, sheet = '_syncs')
   range_autofit(form_file, '_syncs')
 
   form_versions = form_meta[, .(form_version, date_str, actor, is_deployed)]
@@ -180,8 +197,10 @@ update_history_file = \(history_file, folder_url, catalog_source, syncs) {
   range_autofit(history_file, '_catalog')
 
   syncs_ok = syncs[is.na(error), !'error']
-  sheet_append(ss = history_file, data = syncs_ok, sheet= '_syncs')
-  range_autofit(history_file, '_syncs')
+  if (nrow(syncs_ok) > 0L) {
+    sheet_append_safe(ss = history_file, data = syncs_ok, sheet = '_syncs')
+    range_autofit(history_file, '_syncs')
+  }
 
   sheet_write(syncs[!is.na(error)], history_file, '_errors')
   range_autofit(history_file, '_errors')
