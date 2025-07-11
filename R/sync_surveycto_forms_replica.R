@@ -1,13 +1,13 @@
 source(here::here('R', 'utilities.R'))
 
 # Main process ------------------------------------------------------------
-sync_replica = \() {
+sync_surveycto_forms_replica = \() {
   # Authorization
   auth = get_scto_auth()
-  set_google_auth()
+  set_google_auth(type = c('drive', 'gs4'))
 
   # Parameters
-  params = get_params('params.yaml')
+  params = get_params(here('params', 'surveycto_forms.yaml'))
   synced_at = format(Sys.time(), '%Y-%m-%dT%H:%M:%SZ', tz = 'GMT')
 
   catalog_source = scto_catalog(auth)
@@ -43,4 +43,4 @@ sync_replica = \() {
 }
 
 # Run main process --------------------------------------------------------
-sync_replica()
+sync_surveycto_forms_replica()
