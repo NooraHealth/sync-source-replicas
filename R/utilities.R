@@ -55,13 +55,17 @@ set_google_auth = \(auth_file = 'google-token.json', type = c('drive', 'gs4')) {
 }
 
 
+read_sheet_dt = \(...) setDT(read_sheet(...))
+
+
 # Change detection -----------------------------------------------
 get_forms_to_sync = \(history_file, catalog_source) {
-  # will not work as expected if previous sync had errors
   if (is.na(history_file)) {
     catalog_merged = copy(catalog_source)[, last_version_created_at_dest := NA]
+    errors_dest = NULL
   } else {
-    catalog_dest = setDT(read_sheet(history_file, sheet = '_catalog'))
+    catalog_dest = read_sheet_dt(history_file, sheet = '_catalog')
+    errors_dest = read_sheet_dt(history_file, sheet = '_errors')
     catalog_merged = merge(
       catalog_source, catalog_dest[, .(id, last_version_created_at)],
       by = 'id', all.x = TRUE, suffixes = c('', '_dest'))
@@ -69,7 +73,8 @@ get_forms_to_sync = \(history_file, catalog_source) {
   forms = catalog_merged[
     is_deployed == TRUE &
       (is.na(last_version_created_at_dest) |
-         (last_version_created_at != last_version_created_at_dest))]
+         (last_version_created_at != last_version_created_at_dest) |
+         id %in% errors_dest$id)]
   forms
 }
 
@@ -92,7 +97,7 @@ check_is_form_zombie = \(form_id, form_meta, folder_meta) {
   if (!('_versions' %in% sht_names)) return(NA)
 
   ver_cols = c('form_version', 'date_str', 'actor')
-  versions_dest = setDT(read_sheet(file_id, '_versions'))[, ..ver_cols]
+  versions_dest = read_sheet_dt(file_id, '_versions')[, ..ver_cols]
   versions_source = form_meta[, ..ver_cols]
 
   versions_discrepant = fsetdiff(versions_dest, versions_source)
