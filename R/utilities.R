@@ -66,7 +66,6 @@ get_forms_to_sync = \(history_file, catalog_source) {
   } else {
     catalog_dest = read_sheet_dt(history_file, sheet = '_catalog')
     errors_dest = read_sheet_dt(history_file, sheet = '_errors')
-
     catalog_merged = merge(
       catalog_source, catalog_dest[, .(id, last_version_created_at)],
       by = 'id', all.x = TRUE, suffixes = c('', '_dest'))
