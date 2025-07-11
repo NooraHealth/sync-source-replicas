@@ -10,6 +10,10 @@ library('progress')
 library('rsurveycto')
 
 
+db_get_query = \(...) setDT(DBI::dbGetQuery(...))
+read_sheet_dt = \(...) setDT(read_sheet(...))
+
+
 # Parameters ----------------------------------------------------------
 get_params = \(path, envir = NULL) {
   params_raw = yaml::read_yaml(path)
@@ -37,7 +41,8 @@ get_scto_auth = \(auth_file = 'scto_auth.txt') {
 }
 
 
-set_google_auth = \(auth_file = 'google-token.json', type = c('drive', 'gs4')) {
+set_google_auth = \(
+  auth_file = 'google-token.json', type = c('bigquery', 'drive', 'gs4')) {
   type = match.arg(type, several.ok = TRUE)
   token_env = Sys.getenv('GOOGLE_TOKEN')
   token_path = here('secrets', auth_file)
@@ -50,12 +55,10 @@ set_google_auth = \(auth_file = 'google-token.json', type = c('drive', 'gs4')) {
     NULL
   }
 
+  if ('bigquery' %in% type) bigrquery::bq_auth(path = path)
   if ('drive' %in% type) drive_auth(path = path)
   if ('gs4' %in% type) gs4_auth(path = path)
 }
-
-
-read_sheet_dt = \(...) setDT(read_sheet(...))
 
 
 # Change detection -----------------------------------------------
