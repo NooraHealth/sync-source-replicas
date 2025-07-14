@@ -64,7 +64,7 @@ set_google_auth = \(
 # Change detection -----------------------------------------------
 get_files_to_remove = \(folder_meta, catalog_source) {
   files = folder_meta[
-    !(name == '_history' | startsWith(name, '(removed '))][
+    name != '_history' & !startsWith(name, '(removed ')][
       !catalog_source[type == 'form'], on = c('name' = 'id')]
   files
 }
@@ -209,7 +209,19 @@ update_history_file = \(history_file, folder_url, catalog_source, syncs) {
     sheet_write(syncs_empty, history_file, '_syncs')
   }
 
-  sheet_write(catalog_source, history_file, '_catalog')
+  folder_meta = setDT(drive_ls(folder_url)) # get latest state
+  form_files = folder_meta[
+    name != '_history' & !startsWith(name, '(removed ')][
+      , .(file_url = drive_resource[[1L]]$webViewLink), by = name]
+  form_files[, file_url := gs4_formula(
+    glue_data('= hyperlink("{file_url}", "{name}")', .x = .SD))]
+  setnames(form_files, 'name', 'id')
+
+  catalog_new = merge(
+    catalog_source, form_files, by = 'id', all.x = TRUE, sort = FALSE)
+  setcolorder(catalog_new, 'file_url')
+
+  sheet_write(catalog_new, history_file, '_catalog')
   range_autofit(history_file, '_catalog')
 
   syncs_ok = syncs[is.na(error), !'error']
