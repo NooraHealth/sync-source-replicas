@@ -62,6 +62,14 @@ set_google_auth = \(
 
 
 # Change detection -----------------------------------------------
+get_files_to_remove = \(folder_meta, catalog_source) {
+  files = folder_meta[
+    !(name == '_history' | startsWith(name, '(removed '))][
+      !catalog_source[type == 'form'], on = c('name' = 'id')]
+  files
+}
+
+
 get_forms_to_sync = \(history_file, catalog_source) {
   if (is.na(history_file)) {
     catalog_merged = copy(catalog_source)[, last_version_created_at_dest := NA]

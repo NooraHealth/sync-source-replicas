@@ -19,6 +19,13 @@ sync_surveycto_forms_replica = \() {
   folder_meta = setDT(drive_ls(folder_url))
   history_file = get_history_file(folder_meta)
 
+  files = get_files_to_remove(folder_meta, catalog_source)
+  if (nrow(files) > 0L) {
+    cli_alert_success(
+      'Renaming files for {nrow(files)} form{?s} that have disappeared.')
+    r = files[, rename_zombie_file(name, .BY$id, ..synced_at), by = id]
+  }
+
   forms = get_forms_to_sync(history_file, catalog_source)
   if (nrow(forms) == 0) {
     cli_alert_success('No forms need syncing.')
