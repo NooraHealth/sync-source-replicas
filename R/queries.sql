@@ -273,6 +273,8 @@ facilities as (
       p.name as province_name,
       f.district_id,
       d.name as district_name,
+      cast(m.partner_id as int64) as team_id,
+      m.partner_name as team_name,
     f.facility_type_id,
     t.name as facility_type_name,
     f.is_active,
@@ -286,6 +288,8 @@ facilities as (
       on f.province_id = p.id
     left join `noorahealth-raw`.`hep_nepal_unified`.`app_backend_district` as d
       on f.district_id = d.id
+    left join `noorahealth-raw`.`ccp_nepal_mappings`.`facilities` as m
+      on f.id = cast(m.facility_id as int64)
 )
 select *
 from facilities
@@ -302,6 +306,8 @@ facilities as (
       p.name as province_name,
       f.district_id,
       d.name as district_name,
+      cast(m.partner_id as int64) as team_id,
+      m.partner_name as team_name,
     f.facility_type_id,
     t.name as facility_type_name,
     f.is_active,
@@ -315,6 +321,8 @@ facilities as (
       on f.province_id = p.id
     left join `noorahealth-raw`.`hep_nepal_unified`.`app_backend_district` as d
       on f.district_id = d.id
+    left join `noorahealth-raw`.`ccp_nepal_mappings`.`facilities` as m
+      on f.id = cast(m.facility_id as int64)
 )
 ,
 sessions as (
