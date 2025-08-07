@@ -66,6 +66,7 @@ sessions as (
 select
   t.id as trainer_id,
   t.name as trainer_name,
+  t.name || ' (ID ' || t.id || ')' as trainer_name_id,
   t.department_id,
   dp.name as department_name,
   t.designation_id,
@@ -152,6 +153,7 @@ sessions as (
 select
   t.id as trainer_id,
   t.name as trainer_name,
+  t.name || ' (ID ' || t.id || ')' as trainer_name_id,
   t.department_id,
   dp.name as department_name,
   t.designation_id,
@@ -240,6 +242,7 @@ sessions as (
 select
   t.id as trainer_id,
   t.name as trainer_name,
+  t.name || ' (ID ' || t.id || ')' as trainer_name_id,
   t.department_id,
   dp.name as department_name,
   t.designation_id,
@@ -336,6 +339,7 @@ sessions as (
 select
   t.id as trainer_id,
   t.name as trainer_name,
+  t.name || ' (ID ' || t.id || ')' as trainer_name_id,
   t.department_id,
   dp.name as department_name,
   t.designation_id,
