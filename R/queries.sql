@@ -85,7 +85,7 @@ left join `noorahealth-raw`.`hep_bangladesh_unified`.`app_backend_department` as
 left join `noorahealth-raw`.`hep_bangladesh_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
 left join `noorahealth-raw`.`hep_bangladesh_unified`.`phones_phonenumber` as p
-  on t.id = p.user_id
+  on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
 where f.facility_id is not null
@@ -174,7 +174,7 @@ left join `noorahealth-raw`.`hep_india_unified`.`app_backend_department` as dp
 left join `noorahealth-raw`.`hep_india_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
 left join `noorahealth-raw`.`hep_india_unified`.`phones_phonenumber` as p
-  on t.id = p.user_id
+  on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
 where f.facility_id is not null
@@ -265,7 +265,7 @@ left join `noorahealth-raw`.`hep_indonesia_unified`.`app_backend_department` as 
 left join `noorahealth-raw`.`hep_indonesia_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
 left join `noorahealth-raw`.`hep_indonesia_unified`.`phones_phonenumber` as p
-  on t.id = p.user_id
+  on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
 where f.facility_id is not null
@@ -364,7 +364,7 @@ left join `noorahealth-raw`.`hep_nepal_unified`.`app_backend_department` as dp
 left join `noorahealth-raw`.`hep_nepal_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
 left join `noorahealth-raw`.`hep_nepal_unified`.`phones_phonenumber` as p
-  on t.id = p.user_id
+  on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
 where f.facility_id is not null
