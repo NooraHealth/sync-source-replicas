@@ -1,0 +1,21 @@
+# HRPW Database Sync Configuration - TEMPLATE
+# File: params/hrpw_sync.yaml.template
+# Copy this to hrpw_sync.yaml and fill in your values
+
+# Google Sheets output
+output_file_url: https://docs.google.com/spreadsheets/d/1UDh5ZfRZdkbtSadfJxJLTbxv4wnflJshzxWXTgkc1ng
+
+# SQL queries file
+queries_file: R/hrpw_queries.sql
+
+# --- LOCAL ENVIRONMENT ONLY (not used on GitHub Actions) ---
+# These values are only used when running locally
+# On GitHub Actions, these are overridden by secrets
+
+# Database connection (local only)
+database:
+  dbname: your_database_name
+  host: localhost
+  port: portno
+  user: your_username
+  password: your_password

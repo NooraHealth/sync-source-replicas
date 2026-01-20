@@ -7,3 +7,4 @@ secrets/
 *.DS_Store
 *.txt
 *.xlsx
+params/hrpw_sync.yaml
