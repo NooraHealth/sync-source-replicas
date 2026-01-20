@@ -55,6 +55,14 @@ facilities as (
       on f.district_id = d.id
 )
 ,
+phones as (
+  select
+    user_id,
+    max_by(number, updated_at) as number
+  from `noorahealth-raw`.`hep_bangladesh_unified`.`phones_phonenumber`
+  group by user_id
+),
+
 sessions as (
   select
     created_by_id,
@@ -84,7 +92,7 @@ left join `noorahealth-raw`.`hep_bangladesh_unified`.`app_backend_department` as
   on t.department_id = dp.id
 left join `noorahealth-raw`.`hep_bangladesh_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
-left join `noorahealth-raw`.`hep_bangladesh_unified`.`phones_phonenumber` as p
+left join phones as p
   on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
@@ -144,6 +152,14 @@ facilities as (
       on f.district_id = d.id
 )
 ,
+phones as (
+  select
+    user_id,
+    max_by(number, updated_at) as number
+  from `noorahealth-raw`.`hep_india_unified`.`phones_phonenumber`
+  group by user_id
+),
+
 sessions as (
   select
     created_by_id,
@@ -173,7 +189,7 @@ left join `noorahealth-raw`.`hep_india_unified`.`app_backend_department` as dp
   on t.department_id = dp.id
 left join `noorahealth-raw`.`hep_india_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
-left join `noorahealth-raw`.`hep_india_unified`.`phones_phonenumber` as p
+left join phones as p
   on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
@@ -235,6 +251,14 @@ facilities as (
       on f.regency_id = r.id
 )
 ,
+phones as (
+  select
+    user_id,
+    max_by(number, updated_at) as number
+  from `noorahealth-raw`.`hep_indonesia_unified`.`phones_phonenumber`
+  group by user_id
+),
+
 sessions as (
   select
     created_by_id,
@@ -264,7 +288,7 @@ left join `noorahealth-raw`.`hep_indonesia_unified`.`app_backend_department` as 
   on t.department_id = dp.id
 left join `noorahealth-raw`.`hep_indonesia_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
-left join `noorahealth-raw`.`hep_indonesia_unified`.`phones_phonenumber` as p
+left join phones as p
   on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
@@ -334,6 +358,14 @@ facilities as (
       on f.id = cast(m.facility_id as int64)
 )
 ,
+phones as (
+  select
+    user_id,
+    max_by(number, updated_at) as number
+  from `noorahealth-raw`.`hep_nepal_unified`.`phones_phonenumber`
+  group by user_id
+),
+
 sessions as (
   select
     created_by_id,
@@ -363,7 +395,7 @@ left join `noorahealth-raw`.`hep_nepal_unified`.`app_backend_department` as dp
   on t.department_id = dp.id
 left join `noorahealth-raw`.`hep_nepal_unified`.`app_backend_designation` as dg
   on t.designation_id = dg.id
-left join `noorahealth-raw`.`hep_nepal_unified`.`phones_phonenumber` as p
+left join phones as p
   on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
