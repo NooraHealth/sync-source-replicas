@@ -12,17 +12,18 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy R dependency file first (for caching)
-COPY . /app
-
 # Install renv
 RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
 
-# Restore packages from renv.lock
-RUN R -e "renv::restore(prompt = FALSE)" >> docker_build.log 2>&1
+# Copy renv files and restore packages
+COPY renv.lock renv.lock
+COPY renv/ renv/
 
-# Run your utility script
-#RUN Rscript R/utilities.R
+# Restore packages from renv.lock
+RUN R -e "renv::restore(prompt = FALSE)"
+
+# Copy R dependency file first (for caching)
+COPY . /app
 
 # Default command
 CMD ["Rscript", "R/sync_hrpw_database.R"]
