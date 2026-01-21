@@ -17,7 +17,7 @@ COPY renv.lock renv.lock
 COPY renv/ renv/
 
 # Install renv
-# RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
 
 # Restore packages from renv.lock
 RUN R -e "renv::restore(prompt = FALSE)"
