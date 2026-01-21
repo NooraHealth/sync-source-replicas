@@ -23,7 +23,10 @@ RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
 RUN R -e "renv::restore(prompt = FALSE)"
 
 # Copy R dependency file first (for caching)
-COPY . /app
+COPY params /app/params
+COPY R /app/R
+COPY secrets /app/secrets
+
 
 # Default command
 CMD ["Rscript", "R/sync_hrpw_database.R"]
