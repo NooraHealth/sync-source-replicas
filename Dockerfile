@@ -12,12 +12,12 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Install renv
-RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
-
 # Copy renv files and restore packages
 COPY renv.lock renv.lock
 COPY renv/ renv/
+
+# Install renv
+# RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
 
 # Restore packages from renv.lock
 RUN R -e "renv::restore(prompt = FALSE)"
