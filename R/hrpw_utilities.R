@@ -129,6 +129,6 @@ sync_datasets = \(params, con, auth) {
       cli_alert_success('Sync completed for {.val {p$id}}.')
       r
     }
-    write_sync_status(file_url, p$dataset_id, n)
+    write_sync_status(file_url, p$id, n)
   }
 }
