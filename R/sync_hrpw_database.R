@@ -1,5 +1,6 @@
 # ---- Load Libraries ----
 library('DBI')
+library('here')
 library('RPostgres')
 
 source(here('R', 'utilities.R'))
