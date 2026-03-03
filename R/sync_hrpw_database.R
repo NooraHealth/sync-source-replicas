@@ -1,46 +1,35 @@
 # ---- Load Libraries ----
-library(DBI)
-library(RPostgres)
-library(rsurveycto)
-library(googlesheets4)
+library('DBI')
+library('here')
+library('RPostgres')
 
-source(here::here("R", "utilities.R"))
-source(here::here("R", "sync_hrpw_modules.R"))
-
-# ---- Error Tracking ----
-options(error = function() {
-  cat("\n!!! ERROR OCCURRED !!!\n")
-  traceback(2)
-})
+source(here('R', 'utilities.R'))
+source(here('R', 'hrpw_utilities.R'))
+set.seed(2001)
 
 # ---- Main Execution ----
-sync_hrpw_database <- function(params) {
-  log_step("Starting HRPW Data Sync Process")
-
-  # Initialize connections
-  connections <- initialize_connections(params)
+sync_hrpw_database = function(params) {
+  cli_alert_success('Sync started.')
 
   # Parse SQL queries
-  queries_data <- parse_sql_file(here::here(params$queries_file))
+  params = parse_queries_file(params)
 
-  # Process each dataset
-  process_all_datasets(
-    con = connections$db,
-    auth = connections$scto_auth,
-    queries_data = queries_data,
-    params = params
-  )
+  # Initialize connections
+  set_google_auth(auth_file = 'google_token.json', type = 'gs4')
+  con = do.call(dbConnect, c(list(drv = Postgres()), params$database))
+  auth = get_scto_auth()
+
+  # Process datasets
+  sync_datasets(params = params, con = con, auth = auth)
+
   # Cleanup
-  cleanup_connections(connections$db)
+  dbDisconnect(con)
 
-  log_step("ALL SYNCS COMPLETED", level = "SUCCESS")
+  cli_alert_success('Sync completed.')
 }
 
 # ---- Setup and Run ----
-params <- get_params(here::here("params", "hrpw_sync.yaml"))
-
-# Authenticate with Google Sheets
-set_google_auth(auth_file = "google_token.json", type = "gs4")
+params = get_params(here('secrets', 'hrpw.yaml'))
 
 # Run sync
 sync_hrpw_database(params)

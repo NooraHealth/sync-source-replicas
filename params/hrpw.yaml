@@ -1,12 +1,18 @@
 # HRPW Database Sync Configuration - TEMPLATE
-# File: params/hrpw_sync.yaml.template
-# Copy this to hrpw_sync.yaml and fill in your values
+# File: params/hrpw.yaml
+# Copy this to secrets/hrpw.yaml and fill in your values
 
 # Google Sheets output
 output_file_url: https://docs.google.com/spreadsheets/d/1UDh5ZfRZdkbtSadfJxJLTbxv4wnflJshzxWXTgkc1ng
 
 # SQL queries file
 queries_file: R/hrpw_queries.sql
+
+datasets:
+  - id: hrpw_8th_month_dataset
+    enumerator_email: ['rahul.a@noorahealth.org', 'neelkandan@noorahealth.org']
+  - id: hrpw_8th_month_dataset1
+    enumerator_email: ['rahul.a@noorahealth.org', 'neelkandan@noorahealth.org']
 
 # --- LOCAL ENVIRONMENT ONLY (not used on GitHub Actions) ---
 # These values are only used when running locally
@@ -16,6 +22,6 @@ queries_file: R/hrpw_queries.sql
 database:
   dbname: your_database_name
   host: localhost
-  port: portno
+  port: your_port_number
   user: your_username
   password: your_password
