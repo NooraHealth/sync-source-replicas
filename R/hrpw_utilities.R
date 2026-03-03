@@ -10,7 +10,7 @@ set_column_classes = \(d) {
   for (col in colnames(d)) {
     vals = if (inherits(d[[col]], c('POSIXct', 'POSIXlt'))) {
       format_datetime(d[[col]])
-    } else if (inherits(d[[col]], c('Date', 'factor'))) {
+    } else if (inherits(d[[col]], c('Date', 'factor', 'integer64'))) {
       as.character(d[[col]])
     } else if (is.logical(d[[col]])) {
       as.integer(d[[col]])
@@ -62,8 +62,7 @@ sync_dataset = \(dataset_params, con, auth, file_url, catalog) {
       '{.val {dataset_id}} corresponds to a form, not a dataset.')
     return(0L)
   } else {
-    cli_alert_warning('{.val {dataset_id}} does not exist on SurveyCTO.')
-    data.table(id = character())
+    cli_abort('{.val {dataset_id}} does not exist on SurveyCTO.')
   }
 
   file_meta = gs4_get(file_url)
@@ -100,7 +99,7 @@ sync_dataset = \(dataset_params, con, auth, file_url, catalog) {
 
   # TODO: would be easier to update enumerator info if it came from the gsheet
   col = 'enumerator_email'
-  assignments = rep_len(sample(p[[col]]), nrow(df_new))
+  assignments = rep_len(sample(dataset_params[[col]]), nrow(df_new))
   set(df_new, j = col, value = assignments)
 
   scto_write(auth, df_new, dataset_id, append = TRUE, fill = TRUE)
