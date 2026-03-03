@@ -3,22 +3,18 @@
 # Copy this to secrets/hrpw.yaml and fill in your values
 
 # Google Sheets output
-output_file_url: https://docs.google.com/spreadsheets/d/1UDh5ZfRZdkbtSadfJxJLTbxv4wnflJshzxWXTgkc1ng
+output_file_url: https://docs.google.com/spreadsheets/d/1HnDa6-VFedGjtfHCW4llCL1hqxlZA_YL_9D7EY7d4Vw
 
 # SQL queries file
 queries_file: R/hrpw_queries.sql
 
 datasets:
   - id: hrpw_8th_month_dataset
-    enumerator_email: ['rahul.a@noorahealth.org', 'neelkandan@noorahealth.org']
+    enumerator_email: ['EMAILID1', 'EMAILID2']
   - id: hrpw_8th_month_dataset1
-    enumerator_email: ['rahul.a@noorahealth.org', 'neelkandan@noorahealth.org']
+    enumerator_email: ['EMAILID3', 'EMAILID4']
 
-# --- LOCAL ENVIRONMENT ONLY (not used on GitHub Actions) ---
-# These values are only used when running locally
-# On GitHub Actions, these are overridden by secrets
-
-# Database connection (local only)
+# Database connection
 database:
   dbname: your_database_name
   host: localhost

@@ -54,7 +54,6 @@ write_sync_status = \(file_url, dataset_id, num_rows) {
 sync_dataset = \(dataset_params, con, auth, file_url, catalog) {
   dataset_id = dataset_params$id
   id_type = catalog[id == dataset_id]$type
-
   df_scto = if (id_type == 'dataset') {
     scto_read(auth, dataset_id)
   } else if (id_type == 'form') {
@@ -121,8 +120,8 @@ sync_datasets = \(params, con, auth) {
     r = tryCatch(sync_dataset(p, con, auth, file_url, catalog), error = \(e) e)
 
     n = if (inherits(r, 'error')) {
-      cli_bullets(
-        c('x' = 'Sync failed for {.val {p$id}}:', ' ' = as.character(r)))
+      msg = gsub("\\{", "{{", gsub("\\}", "}}", as.character(r)))
+      cli_bullets(c('x' = 'Sync failed for {.val {p$id}}:', ' ' = msg))
       -1L
     } else {
       cli_alert_success('Sync completed for {.val {p$id}}.')

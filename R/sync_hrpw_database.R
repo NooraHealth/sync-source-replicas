@@ -29,7 +29,7 @@ sync_hrpw_database = function(params) {
 }
 
 # ---- Setup and Run ----
-params = get_params(here('secrets', 'hrpw.yaml'))
+params = get_params(here('params', 'hrpw.yaml'))
 
 # Run sync
 sync_hrpw_database(params)
