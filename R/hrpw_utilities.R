@@ -6,6 +6,7 @@
 # ---- Normalization ----
 format_datetime = \(x) format(x, '%F %X', tz = 'GMT')
 
+
 set_column_classes = \(d) {
   for (col in colnames(d)) {
     vals = if (inherits(d[[col]], c('POSIXct', 'POSIXlt'))) {
@@ -21,6 +22,7 @@ set_column_classes = \(d) {
   }
   invisible(d)
 }
+
 
 # ---- SQL Parsing ----
 parse_queries_file = \(params) {
@@ -41,6 +43,7 @@ parse_queries_file = \(params) {
   params_new
 }
 
+
 # ---- Sync Status ----
 write_sync_status = \(file_url, dataset_id, num_rows) {
   status = data.table(
@@ -50,6 +53,7 @@ write_sync_status = \(file_url, dataset_id, num_rows) {
   )
   sheet_append_safe(ss = file_url, data = status, sheet = 'status')
 }
+
 
 sync_dataset = \(dataset_params, con, auth, file_url, catalog) {
   dataset_id = dataset_params$id
@@ -113,6 +117,7 @@ sync_dataset = \(dataset_params, con, auth, file_url, catalog) {
   nrow(df_new)
 }
 
+
 sync_datasets = \(params, con, auth) {
   file_url = params$output_file_url
   catalog = scto_catalog(auth)
@@ -120,7 +125,7 @@ sync_datasets = \(params, con, auth) {
     r = tryCatch(sync_dataset(p, con, auth, file_url, catalog), error = \(e) e)
 
     n = if (inherits(r, 'error')) {
-      msg = gsub("\\{", "{{", gsub("\\}", "}}", as.character(r)))
+      msg = gsub('\\{', '{{', gsub('\\}', '}}', as.character(r)))
       cli_bullets(c('x' = 'Sync failed for {.val {p$id}}:', ' ' = msg))
       -1L
     } else {
