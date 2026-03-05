@@ -167,9 +167,15 @@ fetch_form_definition = \(auth, form_id, def_dir = tempdir()) {
 sheet_append_safe = \(ss, data, sheet) {
   ss_meta = gs4_get(ss)
   sheets = as.data.table(ss_meta$sheets)
-  num_rows = sheets[name == sheet]$grid_rows + nrow(data)
-  sheet_resize(ss, sheet, nrow = num_rows)
-  sheet_append(ss = ss, data = data, sheet = sheet)
+  num_rows_old = sheets[name == sheet]$grid_rows
+
+  if (length(num_rows_old) == 0L) {
+    sheet_write(data = data, ss = ss, sheet = sheet)
+  } else {
+    num_rows = num_rows_old + nrow(data)
+    sheet_resize(ss = ss, sheet = sheet, nrow = num_rows)
+    sheet_append(ss = ss, data = data, sheet = sheet)
+  }
 }
 
 

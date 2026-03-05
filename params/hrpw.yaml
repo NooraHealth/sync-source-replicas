@@ -1,0 +1,23 @@
+# HRPW Database Sync Configuration - TEMPLATE
+# File: params/hrpw.yaml
+# Copy this to secrets/hrpw.yaml and fill in your values
+
+# Google Sheets output
+output_file_url: https://docs.google.com/spreadsheets/d/1HnDa6-VFedGjtfHCW4llCL1hqxlZA_YL_9D7EY7d4Vw
+
+# SQL queries file
+queries_file: R/hrpw_queries.sql
+
+datasets:
+  - id: hrpw_8th_month_dataset
+    enumerator_email: ['EMAILID1', 'EMAILID2']
+  - id: hrpw_8th_month_dataset1
+    enumerator_email: ['EMAILID3', 'EMAILID4']
+
+# Database connection
+database:
+  dbname: your_database_name
+  host: localhost
+  port: your_port_number
+  user: your_username
+  password: your_password
