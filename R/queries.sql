@@ -274,6 +274,7 @@ select
   t.department_id,
   dp.name as department_name,
   t.designation_id,
+  case when t.designation_id = 9 then 0 else 1 end as is_counsellor,
   dg.name as designation_name,
   f.* except (is_active, created_at, updated_at),
   coalesce(s.num_sessions_submitted, 0) as num_sessions_submitted,
