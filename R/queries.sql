@@ -274,6 +274,7 @@ select
   t.department_id,
   dp.name as department_name,
   t.designation_id,
+  if(t.designation_id = 9, 1, 0) as is_cadre,
   dg.name as designation_name,
   f.* except (is_active, created_at, updated_at),
   coalesce(s.num_sessions_submitted, 0) as num_sessions_submitted,
