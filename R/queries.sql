@@ -293,7 +293,7 @@ left join phones as p
   on t.user_id = p.user_id
 left join sessions as s
   on t.id = s.created_by_id
-where f.facility_id is not null
+where f.facility_id is not null and t.account_status = 'active'
 order by f.facility_name, lower(t.name), t.id;
 
 -- sheet_name: nepal_facilities
